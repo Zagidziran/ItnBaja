@@ -1,0 +1,66 @@
+@using ITNBaja.Services
+@inject AuthStateService AuthState
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+@implements IDisposable
+
+@if (isLoading)
+{
+    <a href="/login" class="contacts-link">Войти</a>
+}
+else if (AuthState.IsAuthenticated)
+{
+    <button class="contacts-link logout-btn" @onclick="HandleLogout">Выйти</button>
+}
+else
+{
+    <a href="/login" class="contacts-link">Войти</a>
+}
+
+@if (!string.IsNullOrEmpty(logoutMessage))
+{
+    <div class="logout-message-popup">
+        @logoutMessage
+    </div>
+}
+
+@code {
+    private string logoutMessage = "";
+    private bool isLoading = true;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("AuthButton: Starting initialization");
+        AuthState.OnAuthStateChanged += OnAuthStateChanged;
+        await AuthState.CheckAuthStatusAsync();
+        isLoading = false;
+        Console.WriteLine($"AuthButton initialized. Auth status: {AuthState.IsAuthenticated}");
+        StateHasChanged();
+    }
+    
+    private void OnAuthStateChanged()
+    {
+        Console.WriteLine($"AuthButton: Auth state changed to {AuthState.IsAuthenticated}");
+        InvokeAsync(StateHasChanged);
+    }
+    
+    private async Task HandleLogout()
+    {
+        await AuthState.LogoutAsync();
+        logoutMessage = "Вы успешно вышли из системы.";
+        StateHasChanged();
+        
+        // Clear the message after 3 seconds
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(3000);
+            logoutMessage = "";
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+    
+    public void Dispose()
+    {
+        AuthState.OnAuthStateChanged -= OnAuthStateChanged;
+    }
+}

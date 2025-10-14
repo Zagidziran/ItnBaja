@@ -1,0 +1,65 @@
+.contacts-page {
+    min-height: 80vh;
+    padding: 0;
+    margin: 0;
+}
+
+.contacts-container {
+    max-width: 600px;
+    width: 100%;
+    text-align: left;
+}
+
+.contacts-title {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 2rem;
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.contact-item {
+    text-align: left;
+}
+
+.contact-label {
+    font-size: 1.2rem;
+    margin: 0 0 0.5rem 0;
+    color: #333;
+}
+
+.contact-value {
+    font-size: 1.2rem;
+    margin: 0;
+    color: #333;
+}
+
+.contact-value a {
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.contact-value a:hover {
+    color: #357abd;
+    text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+    .contacts-title {
+        font-size: 2rem;
+    }
+    
+    .contact-label {
+        font-size: 1.1rem;
+    }
+    
+    .contact-value {
+        font-size: 1.1rem;
+    }
+}

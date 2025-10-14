@@ -1,0 +1,4 @@
+wwwroot\appsettings.Development.json
+wwwroot\appsettings.json
+C:\gitclone\ITN Baja\ITNBaja\ITNBaja\ITNBaja.Client\wwwroot\appsettings.Development.json
+C:\gitclone\ITN Baja\ITNBaja\ITNBaja\ITNBaja.Client\wwwroot\appsettings.json

@@ -1,0 +1,161 @@
+@page "/login"
+@page "/войти"
+@using System.Net.Http.Json
+@using ITNBaja.Services
+@using Microsoft.JSInterop
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject AuthStateService AuthState
+@inject IJSRuntime JSRuntime
+@rendermode InteractiveServer
+
+<PageTitle>Вход</PageTitle>
+
+<div class="login-content">
+    <div class="login-container">
+        <h1 class="login-title">Вход в систему</h1>
+        
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="error-message">
+                @errorMessage
+            </div>
+        }
+        
+        @if (!string.IsNullOrEmpty(successMessage))
+        {
+            <div class="success-message">
+                @successMessage
+            </div>
+        }
+        
+        @if (isLoading)
+        {
+            <p>Проверка данных...</p>
+        }
+        else
+        {
+            <div class="login-form">
+                <div class="form-group">
+                    <label for="username">Имя пользователя:</label>
+                    <input type="text" id="username" @bind="username" class="form-input" placeholder="Введите имя пользователя" @onkeypress="@(async (e) => { if (e.Key == "Enter") await HandleLogin(); })" />
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Пароль:</label>
+                    <input type="password" id="password" @bind="password" class="form-input" placeholder="Введите пароль" @onkeypress="@(async (e) => { if (e.Key == "Enter") await HandleLogin(); })" />
+                </div>
+                
+                <button type="button" class="login-button" disabled="@isLoading" @onclick="HandleLogin">
+                    @if (isLoading)
+                    {
+                        <span>Вход...</span>
+                    }
+                    else
+                    {
+                        <span>Войти</span>
+                    }
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private string username = "";
+    private string password = "";
+    private string errorMessage = "";
+    private string successMessage = "";
+    private bool isLoading = false;
+    
+    private async Task HandleLogin()
+    {
+        Console.WriteLine("HandleLogin called!");
+        errorMessage = "";
+        successMessage = "";
+        isLoading = true;
+        StateHasChanged();
+        
+        try
+        {
+            Console.WriteLine($"Attempting login with username: {username}");
+            
+            var loginRequest = new LoginRequest
+            {
+                Username = username,
+                Password = password
+            };
+            
+            // Construct full URL using NavigationManager
+            var baseUri = Navigation.BaseUri;
+            var fullUrl = new Uri(new Uri(baseUri), "api/auth/login").ToString();
+            Console.WriteLine($"Full URL: {fullUrl}");
+            
+            var response = await Http.PostAsJsonAsync(fullUrl, loginRequest);
+            Console.WriteLine($"Response status: {response.StatusCode}");
+            
+            var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+            Console.WriteLine($"Response result: Success={result?.Success}, Message={result?.Message}");
+            
+            if (result != null)
+            {
+                if (result.Success)
+                {
+                    // Store token in localStorage
+                    if (!string.IsNullOrEmpty(result.Token))
+                    {
+                        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "authToken", result.Token);
+                    }
+                    
+                    // Show success message and clear form
+                    errorMessage = "";
+                    successMessage = "Вы успешно вошли в систему!";
+                    username = "";
+                    password = "";
+                    
+                    // Refresh auth state to update the MainLayout button
+                    await AuthState.CheckAuthStatusAsync();
+                    
+                    // Also trigger JavaScript auth check immediately
+                    await Task.Delay(100); // Small delay to ensure session is set
+                    
+                    // Clear success message after 3 seconds
+                    _ = Task.Run(async () =>
+                    {
+                        await Task.Delay(3000);
+                        successMessage = "";
+                        await InvokeAsync(StateHasChanged);
+                    });
+                }
+                else
+                {
+                    errorMessage = result.Message;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Ошибка при входе в систему. Попробуйте еще раз.";
+            Console.WriteLine($"Login error: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+    
+    public class LoginRequest
+    {
+        public string Username { get; set; } = "";
+        public string Password { get; set; } = "";
+    }
+    
+    public class LoginResponse
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; } = "";
+        public string Token { get; set; } = "";
+    }
+}
