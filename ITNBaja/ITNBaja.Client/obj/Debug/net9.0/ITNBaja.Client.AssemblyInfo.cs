@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ITNBaja.Client")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+179354ee21ade3cf17a39ae667a2569e91991946")]
 [assembly: System.Reflection.AssemblyProductAttribute("ITNBaja.Client")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ITNBaja.Client")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
