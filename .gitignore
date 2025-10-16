@@ -2,6 +2,6 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/ITNBaja
-/ITNBaja/ITNBaja/bin/Debug/net9.0
-/ITNBaja/ITNBaja.Client/bin/Debug/net9.0
+/.vs
+/**/bin
+/**/obj
