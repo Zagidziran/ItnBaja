@@ -1,6 +1,8 @@
 @using ITNBaja.Services
+@using Microsoft.JSInterop
 @inject AuthStateService AuthState
 @inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
 @rendermode InteractiveServer
 @implements IDisposable
 
@@ -49,6 +51,16 @@ else
         await AuthState.LogoutAsync();
         logoutMessage = "Вы успешно вышли из системы.";
         StateHasChanged();
+        
+        // Trigger client-side auth refresh for WebAssembly components
+        try
+        {
+            await JSRuntime.InvokeVoidAsync("triggerScheduleAuthRefresh");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error triggering client auth refresh: {ex.Message}");
+        }
         
         // Clear the message after 3 seconds
         _ = Task.Run(async () =>

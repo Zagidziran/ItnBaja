@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
+using ITNBaja.Controllers.Responses;
 
 namespace ITNBaja.Services
 {
@@ -36,16 +37,19 @@ namespace ITNBaja.Services
                 var fullUrl = new Uri(new Uri(baseUri), "api/auth/status").ToString();
                 Console.WriteLine($"Checking auth status at: {fullUrl}");
 
-                // Create request with token if available
-                var request = new HttpRequestMessage(HttpMethod.Get, fullUrl);
+                var response = await _httpClient.GetAsync(fullUrl);
 
-                // Try to get token from localStorage (this won't work from server-side)
-                // For now, we'll rely on session-based auth for server-side components
-                var response = await _httpClient.SendAsync(request);
-
-                _isAuthenticated = response.StatusCode == System.Net.HttpStatusCode.OK;
-
-                // Only trigger event if state actually changed
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<AuthStatusResponse>();
+                    _isAuthenticated = true;
+                    _username = result?.Username ?? "";
+                }
+                else
+                {
+                    _isAuthenticated = false;
+                    _username = "";
+                }
             }
             catch (Exception ex)
             {
@@ -58,7 +62,6 @@ namespace ITNBaja.Services
             {
                 OnAuthStateChanged?.Invoke();
             }
-
         }
 
         public async Task LogoutAsync()
@@ -78,10 +81,5 @@ namespace ITNBaja.Services
                 Console.WriteLine($"Error during logout: {ex.Message}");
             }
         }
-    }
-
-    public class AuthStatusResponse
-    {
-        public string Username { get; set; } = "";
     }
 }

@@ -109,13 +109,10 @@
 
                 // Refresh auth state to update the MainLayout button
                 await AuthState.CheckAuthStatusAsync();
-                // Clear success message after 3 seconds
-                _ = Task.Run(async () =>
-                {
-                    await Task.Delay(3000);
-                    successMessage = "";
-                    await InvokeAsync(StateHasChanged);
-                });
+                
+                // Navigate to home page after successful login
+                await Task.Delay(1500); // Brief delay to show success message
+                Navigation.NavigateTo("/");
             }
             else
             {

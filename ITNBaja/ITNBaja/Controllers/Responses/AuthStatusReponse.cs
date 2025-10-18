@@ -1,4 +1,4 @@
 ﻿namespace ITNBaja.Controllers.Responses
 {
-    public record AuthStatusReponse(string Username);
+    public record AuthStatusResponse(string Username);
 }

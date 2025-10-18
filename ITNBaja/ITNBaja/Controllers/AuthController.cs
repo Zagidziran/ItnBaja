@@ -3,7 +3,6 @@ using ITNBaja.Controllers.Requests;
 using ITNBaja.Controllers.Responses;
 using ITNBaja.Services;
 using Microsoft.AspNetCore.Mvc;
-using YamlDotNet.Core.Tokens;
 
 namespace ITNBaja.Controllers
 {
@@ -63,7 +62,7 @@ namespace ITNBaja.Controllers
                 var token = authHeader.Substring("Token ".Length).Trim();
                 if (_tokenService.ValidateToken(token, out string tokenUsername))
                 {
-                    return Ok(new AuthStatusReponse(tokenUsername));
+                    return Ok(new AuthStatusResponse(tokenUsername));
                 }
             }
             
@@ -71,7 +70,7 @@ namespace ITNBaja.Controllers
             var sessionToken = HttpContext.Session.GetString("Token");
             if (_tokenService.ValidateToken(sessionToken, out string sessionTokenUsername))
             {
-                return Ok(new AuthStatusReponse(sessionTokenUsername));
+                return Ok(new AuthStatusResponse(sessionTokenUsername));
             }
 
             return Unauthorized();
