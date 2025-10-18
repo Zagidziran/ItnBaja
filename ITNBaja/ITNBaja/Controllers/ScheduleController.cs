@@ -34,9 +34,15 @@ namespace ITNBaja.Controllers
         }
         
         [HttpPost("yaml")]
-        [ITNBaja.Attributes.TokenAuth]
         public async Task<IActionResult> SaveYamlContent([FromBody] SaveYamlRequest request)
         {
+            // Check session-based authentication
+            var isAuthenticated = HttpContext.Session.GetString("IsAuthenticated");
+            if (string.IsNullOrEmpty(isAuthenticated) || isAuthenticated != "true")
+            {
+                return Unauthorized(new { Message = "Authentication required" });
+            }
+
             try
             {
                 var filePath = Path.Combine(_environment.WebRootPath, "schedule.yaml");

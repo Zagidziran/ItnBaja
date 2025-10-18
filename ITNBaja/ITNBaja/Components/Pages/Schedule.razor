@@ -8,6 +8,7 @@
 @inject NavigationManager Navigation
 @inject AuthStateService AuthState
 @inject IJSRuntime JSRuntime
+@inject IWebHostEnvironment Environment
 @rendermode InteractiveServer
 @implements IDisposable
 
@@ -150,12 +151,16 @@
         
         try
         {
-            var baseUri = Navigation.BaseUri;
-            var yamlUrl = new Uri(new Uri(baseUri), "api/schedule/yaml").ToString();
-            var response = await Http.GetFromJsonAsync<YamlContentResponse>(yamlUrl);
-            if (response != null)
+            // Read directly from file system since we're on the server
+            var filePath = Path.Combine(Environment.WebRootPath, "schedule.yaml");
+            if (File.Exists(filePath))
             {
-                yamlContent = response.Content;
+                yamlContent = await File.ReadAllTextAsync(filePath);
+            }
+            else
+            {
+                saveMessage = "Файл расписания не найден.";
+                saveSuccess = false;
             }
         }
         catch (Exception ex)
@@ -173,31 +178,22 @@
         
         try
         {
-            var baseUri = Navigation.BaseUri;
-            var saveUrl = new Uri(new Uri(baseUri), "api/schedule/yaml").ToString();
-            var request = new SaveYamlRequest { Content = yamlContent };
-            
-            // Create HTTP request with token
-            var httpRequest = new HttpRequestMessage(HttpMethod.Post, saveUrl)
+            // Check authentication
+            if (!AuthState.IsAuthenticated)
             {
-                Content = JsonContent.Create(request)
-            };
-            
-            var response = await Http.SendAsync(httpRequest);
-            var result = await response.Content.ReadFromJsonAsync<SaveYamlResponse>();
-            
-            if (result != null && result.Success)
-            {
-                saveMessage = "Расписание успешно сохранено!";
-                saveSuccess = true;
-                isEditing = false;
-                await LoadSchedule(); // Reload the schedule
-            }
-            else
-            {
-                saveMessage = "Ошибка при сохранении расписания.";
+                saveMessage = "Необходима авторизация для сохранения.";
                 saveSuccess = false;
+                return;
             }
+
+            // Save directly to file system since we're on the server
+            var filePath = Path.Combine(Environment.WebRootPath, "schedule.yaml");
+            await File.WriteAllTextAsync(filePath, yamlContent);
+            
+            saveMessage = "Расписание успешно сохранено!";
+            saveSuccess = true;
+            isEditing = false;
+            await LoadSchedule(); // Reload the schedule
         }
         catch (Exception ex)
         {
@@ -235,21 +231,7 @@
         public string Members { get; set; } = "";
     }
 
-    public class YamlContentResponse
-    {
-        public string Content { get; set; } = "";
-    }
-    
-    public class SaveYamlRequest
-    {
-        public string Content { get; set; } = "";
-    }
-    
-    public class SaveYamlResponse
-    {
-        public bool Success { get; set; }
-        public string Message { get; set; } = "";
-    }
+
     
     public void Dispose()
     {
