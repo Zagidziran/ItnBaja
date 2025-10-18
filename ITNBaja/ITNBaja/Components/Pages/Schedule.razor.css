@@ -1,6 +1,22 @@
 .schedule-content {
-    padding: 2rem;
+    padding: 2rem 0;
     margin: 0;
+}
+
+.schedule-content .schedule-header {
+    padding: 0 2rem;
+}
+
+.schedule-content .save-message {
+    margin: 0 2rem 2rem 2rem;
+}
+
+.schedule-content .editor-container {
+    padding: 0;
+}
+
+.schedule-content:not(.editing) {
+    padding: 2rem;
 }
 
 .schedule-header {
@@ -78,6 +94,8 @@
     transform: translateY(-1px);
 }
 
+
+
 .save-message {
     padding: 1rem;
     border-radius: 6px;
@@ -98,8 +116,19 @@
     border: 1px solid #f5c6cb;
 }
 
-.yaml-editor {
+.editor-container {
+    display: flex;
+    gap: 0;
     margin-bottom: 2rem;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+}
+
+.yaml-editor {
+    flex: 1;
+    margin-bottom: 0;
+    padding: 2rem;
+    background: white;
 }
 
 .yaml-editor h3 {
@@ -116,12 +145,109 @@
     font-size: 0.9rem;
     line-height: 1.4;
     resize: vertical;
-    min-height: 400px;
+    min-height: 70vh;
 }
 
 .yaml-textarea:focus {
     outline: none;
     border-color: #4a90e2;
+}
+
+.preview-panel {
+    flex: 1;
+    background: white;
+    padding: 2rem;
+    border-left: 1px solid #e9ecef;
+    height: calc(70vh + 4rem);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.preview-panel h3 {
+    color: #333;
+    margin-bottom: 1rem;
+    margin-top: 0;
+}
+
+.preview-error-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.preview-error {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid #f5c6cb;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+}
+
+.preview-empty {
+    color: #6c757d;
+    font-style: italic;
+    text-align: center;
+    padding: 2rem;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.preview-content {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.preview-day {
+    margin-bottom: 2rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.preview-day-title {
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 0.75rem;
+    font-weight: bold;
+    border-bottom: 2px solid #4a90e2;
+    padding-bottom: 0.25rem;
+}
+
+.preview-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.preview-table th {
+    background: #4a90e2;
+    color: white;
+    padding: 0.5rem;
+    text-align: left;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+.preview-table td {
+    padding: 0.5rem;
+    border-bottom: 1px solid #e9ecef;
+    color: #333;
+}
+
+.preview-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.preview-table tbody tr:last-child td {
+    border-bottom: none;
 }
 
 .schedule-day {
@@ -189,6 +315,18 @@
 
 @media (max-width: 768px) {
     .schedule-content {
+        padding: 1rem 0;
+    }
+    
+    .schedule-content .schedule-header {
+        padding: 0 1rem;
+    }
+    
+    .schedule-content .save-message {
+        margin: 0 1rem 2rem 1rem;
+    }
+    
+    .schedule-content:not(.editing) {
         padding: 1rem;
     }
     
@@ -236,7 +374,34 @@
     
     .yaml-textarea {
         font-size: 0.8rem;
-        min-height: 300px;
+        min-height: 50vh;
+    }
+    
+    .editor-container {
+        flex-direction: column;
+        gap: 0;
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    .yaml-editor {
+        padding: 1rem;
+    }
+    
+    .preview-panel {
+        height: calc(50vh + 3rem);
+        padding: 1rem;
+        border-left: none;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .preview-day {
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+    }
+    
+    .preview-day-title {
+        font-size: 1.1rem;
     }
 }
 

@@ -14,7 +14,7 @@
 
 <PageTitle>Расписание тренировок</PageTitle>
 
-<div class="schedule-content">
+<div class="schedule-content @(isEditing ? "editing" : "")"
     <div class="schedule-header">
         <h1 class="schedule-title">Расписание тренировок</h1>
         @if (isAuthenticated && !isEditing)
@@ -48,9 +48,58 @@
     
     @if (isEditing)
     {
-        <div class="yaml-editor">
-            <h3>Редактирование YAML файла:</h3>
-            <textarea class="yaml-textarea" @bind="yamlContent" rows="20" placeholder="Загрузка содержимого..."></textarea>
+        <div class="editor-container with-preview">
+            <div class="yaml-editor">
+                <h3>Редактирование YAML файла:</h3>
+                <textarea class="yaml-textarea" @bind="yamlContent" @oninput="OnYamlContentChanged" rows="20" placeholder="Загрузка содержимого..."></textarea>
+            </div>
+            
+            <div class="preview-panel">
+                <h3>Превью:</h3>
+                @if (!string.IsNullOrEmpty(previewError))
+                {
+                    <div class="preview-error-container">
+                        <div class="preview-error">
+                            <strong>Ошибка в YAML:</strong><br/>
+                            @previewError
+                        </div>
+                    </div>
+                }
+                else if (previewData != null)
+                {
+                    <div class="preview-content">
+                        @foreach (var day in previewData.Schedule)
+                        {
+                            <div class="preview-day">
+                                <h4 class="preview-day-title">@day.Day</h4>
+                                <table class="preview-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Время</th>
+                                            <th>Участники</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var session in day.Sessions)
+                                        {
+                                            <tr>
+                                                <td>@session.Time</td>
+                                                <td>@session.Members</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="preview-empty">
+                        Нет данных для отображения
+                    </div>
+                }
+            </div>
         </div>
     }
     else if (scheduleData == null)
@@ -87,12 +136,14 @@
 
 @code {
     private ScheduleData? scheduleData;
+    private ScheduleData? previewData;
     private bool isAuthenticated = false;
     private bool isEditing = false;
     private bool isSaving = false;
     private string yamlContent = "";
     private string saveMessage = "";
     private bool saveSuccess = false;
+    private string previewError = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -156,6 +207,7 @@
             if (File.Exists(filePath))
             {
                 yamlContent = await File.ReadAllTextAsync(filePath);
+                UpdatePreview(); // Initialize preview with current content
             }
             else
             {
@@ -212,6 +264,42 @@
         isEditing = false;
         yamlContent = "";
         saveMessage = "";
+        previewData = null;
+        previewError = "";
+    }
+    
+    private async Task OnYamlContentChanged(ChangeEventArgs e)
+    {
+        yamlContent = e.Value?.ToString() ?? "";
+        UpdatePreview(); // Always update preview when content changes
+        await Task.CompletedTask;
+    }
+    
+    private void UpdatePreview()
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(yamlContent))
+            {
+                previewData = null;
+                previewError = "";
+                return;
+            }
+
+            var deserializer = new DeserializerBuilder()
+                .WithCaseInsensitivePropertyMatching()
+                .Build();
+            
+            previewData = deserializer.Deserialize<ScheduleData>(yamlContent);
+            previewError = "";
+        }
+        catch (Exception ex)
+        {
+            previewData = null;
+            previewError = ex.Message;
+        }
+        
+        StateHasChanged();
     }
 
     public class ScheduleData
