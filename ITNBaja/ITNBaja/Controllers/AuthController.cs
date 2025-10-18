@@ -1,6 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
-using ITNBaja.Services;
 using ITNBaja.Attributes;
+using ITNBaja.Controllers.Requests;
+using ITNBaja.Controllers.Responses;
+using ITNBaja.Services;
+using Microsoft.AspNetCore.Mvc;
+using YamlDotNet.Core.Tokens;
 
 namespace ITNBaja.Controllers
 {
@@ -10,7 +13,7 @@ namespace ITNBaja.Controllers
     {
         private readonly AuthenticationService _authService;
         private readonly TokenService _tokenService;
-        
+
         public AuthController(AuthenticationService authService, TokenService tokenService)
         {
             _authService = authService;
@@ -22,60 +25,32 @@ namespace ITNBaja.Controllers
         {
             if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
             {
-                return Ok(new LoginResponse 
-                { 
-                    Success = false, 
-                    Message = "Пожалуйста, заполните все поля." 
-                });
+                return BadRequest("Пожалуйста, заполните все поля.");
             }
             
             if (_authService.ValidateCredentials(request.Username, request.Password))
             {
                 // Generate token
                 var token = _tokenService.GenerateToken(request.Username);
-                
-                // Also set session for backward compatibility
+
                 HttpContext.Session.SetString("IsAuthenticated", "true");
-                HttpContext.Session.SetString("Username", request.Username);
+                HttpContext.Session.SetString("Username", request.Username); 
                 HttpContext.Session.SetString("Token", token);
                 
-                return Ok(new LoginResponse 
-                { 
-                    Success = true, 
-                    Message = "Успешный вход в систему.",
-                    Token = token
-                });
+                return Ok(new LoginResponse(token));
             }
             
-            return Ok(new LoginResponse 
-            { 
-                Success = false, 
-                Message = "Неверное имя пользователя или пароль." 
-            });
+            return Unauthorized("Неверное имя пользователя или пароль.");
         }
         
         [HttpPost("logout")]
         public IActionResult Logout()
         {
-            // Get token from session or header
             var token = HttpContext.Session.GetString("Token");
-            if (string.IsNullOrEmpty(token))
-            {
-                var authHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
-                if (authHeader != null && authHeader.StartsWith("Token "))
-                {
-                    token = authHeader.Substring("Token ".Length).Trim();
-                }
-            }
-            
-            // Revoke token
-            if (!string.IsNullOrEmpty(token))
-            {
-                _tokenService.RevokeToken(token);
-            }
-            
+            _tokenService.RevokeToken(token);
             HttpContext.Session.Clear();
-            return Ok(new { Success = true });
+
+            return Ok();
         }
         
         [HttpGet("status")]
@@ -88,23 +63,18 @@ namespace ITNBaja.Controllers
                 var token = authHeader.Substring("Token ".Length).Trim();
                 if (_tokenService.ValidateToken(token, out string tokenUsername))
                 {
-                    return Ok(new { IsAuthenticated = true, Username = tokenUsername });
+                    return Ok(new AuthStatusReponse(tokenUsername));
                 }
             }
             
             // Fallback to session
-            var isAuthenticated = HttpContext.Session.GetString("IsAuthenticated") == "true";
-            var username = HttpContext.Session.GetString("Username") ?? "";
-            
-            return Ok(new { IsAuthenticated = isAuthenticated, Username = username });
-        }
-        
-        [HttpGet("validate")]
-        [TokenAuth]
-        public IActionResult ValidateToken()
-        {
-            var username = HttpContext.Items["Username"]?.ToString() ?? "";
-            return Ok(new { IsValid = true, Username = username });
+            var sessionToken = HttpContext.Session.GetString("Token");
+            if (_tokenService.ValidateToken(sessionToken, out string sessionTokenUsername))
+            {
+                return Ok(new AuthStatusReponse(sessionTokenUsername));
+            }
+
+            return Unauthorized();
         }
     }
 }

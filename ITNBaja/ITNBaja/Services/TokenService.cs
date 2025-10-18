@@ -69,19 +69,12 @@ namespace ITNBaja.Services
                 _cache.Remove($"token_{token}");
             }
         }
-        
-        public void RevokeAllUserTokens(string username)
+
+        private class TokenInfo
         {
-            // Note: This is a simplified implementation
-            // In production, you might want to maintain a user->tokens mapping
-            // For now, we'll rely on natural expiration
+            public string Username { get; set; } = "";
+            public DateTime CreatedAt { get; set; }
+            public DateTime ExpiresAt { get; set; }
         }
-    }
-    
-    public class TokenInfo
-    {
-        public string Username { get; set; } = "";
-        public DateTime CreatedAt { get; set; }
-        public DateTime ExpiresAt { get; set; }
     }
 }
