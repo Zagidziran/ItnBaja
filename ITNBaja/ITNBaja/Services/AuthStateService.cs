@@ -6,14 +6,14 @@ namespace ITNBaja.Services
 {
     public class AuthStateService
     {
-        private readonly HttpClient _httpClient;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly NavigationManager _navigation;
         private bool _isAuthenticated = false;
         private string _username = "";
 
-        public AuthStateService(HttpClient httpClient, NavigationManager navigation)
+        public AuthStateService(IHttpClientFactory httpClientFactory, NavigationManager navigation)
         {
-            _httpClient = httpClient;
+            _httpClientFactory = httpClientFactory;
             _navigation = navigation;
         }
 
@@ -33,11 +33,13 @@ namespace ITNBaja.Services
             var wasAuthenticated = _isAuthenticated;
             try
             {
+                using var httpClient = _httpClientFactory.CreateClient();
+                
                 var baseUri = _navigation.BaseUri;
                 var fullUrl = new Uri(new Uri(baseUri), "api/auth/status").ToString();
                 Console.WriteLine($"Checking auth status at: {fullUrl}");
 
-                var response = await _httpClient.GetAsync(fullUrl);
+                var response = await httpClient.GetAsync(fullUrl);
 
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
@@ -68,10 +70,12 @@ namespace ITNBaja.Services
         {
             try
             {
+                using var httpClient = _httpClientFactory.CreateClient();
+                
                 var baseUri = _navigation.BaseUri;
                 var fullUrl = new Uri(new Uri(baseUri), "api/auth/logout").ToString();
 
-                await _httpClient.PostAsync(fullUrl, null);
+                await httpClient.PostAsync(fullUrl, null);
                 _isAuthenticated = false;
                 _username = "";
                 OnAuthStateChanged?.Invoke();

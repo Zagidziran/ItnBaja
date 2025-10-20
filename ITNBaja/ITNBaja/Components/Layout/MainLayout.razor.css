@@ -5,27 +5,38 @@
     min-height: 100vh;
 }
 
+.header-section {
+    position: relative;
+    background: #FFD700;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
 .header-banner {
-    background: linear-gradient(135deg, #4a90e2 0%, #7bb3f0 100%);
-    color: white;
+    background: #FFD700;
+    color: #333;
     padding: 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     position: relative;
     z-index: 10;
 }
+
+
 
 .banner-left {
     display: flex;
     align-items: center;
     gap: 20px;
+    flex: 1;
+    margin-right: 150px;
 }
 
 .banner-right {
     display: flex;
     align-items: center;
+    z-index: 10;
+    position: relative;
 }
 
 .banner-image {
@@ -34,32 +45,45 @@
     object-fit: contain;
 }
 
+.flags-image {
+    position: absolute;
+    right: 120px;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+    z-index: 15;
+}
+
 .banner-text {
     font-size: 1.8rem;
     font-weight: bold;
     margin: 0;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
     text-align: left;
+    color: #333;
 }
 
 .contacts-link {
-    color: white;
+    color: #000;
     text-decoration: none;
     font-size: 1.1rem;
-    font-weight: 500;
+    font-weight: 600;
     padding: 8px 16px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: 2px solid #000;
     border-radius: 6px;
     transition: all 0.3s ease;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.9);
 }
 
 .contacts-link:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 1);
+    border-color: #000;
     text-decoration: none;
-    color: white;
+    color: #000;
     transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .logout-btn {
@@ -84,8 +108,8 @@
 }
 
 .top-menu {
-    background: linear-gradient(135deg, #4a90e2 0%, #7bb3f0 100%);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: #FFD700;
+    position: relative;
 }
 
 .menu-container {
@@ -93,11 +117,11 @@
     justify-content: flex-start;
     align-items: center;
     gap: 2rem;
-    padding: 1rem 2rem;
+    padding: 0.5rem 2rem;
 }
 
 .menu-item {
-    color: white;
+    color: #333;
     text-decoration: none;
     font-size: 1.1rem;
     font-weight: 500;
@@ -108,14 +132,14 @@
 }
 
 .menu-item:hover {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
+    background: rgba(0, 0, 0, 0.1);
+    color: #000;
     text-decoration: none;
 }
 
 .menu-item.active {
-    background: rgba(255, 255, 255, 0.3);
-    color: white;
+    background: rgba(0, 0, 0, 0.2);
+    color: #000;
 }
 
 main {
@@ -131,9 +155,17 @@ main {
         padding: 15px;
         align-items: flex-start;
     }
+    
+    .flags-image {
+        position: static;
+        height: 80px;
+        align-self: center;
+        margin: 10px 0;
+    }
 
     .banner-left {
         gap: 15px;
+        margin-right: 0;
     }
 
     .banner-text {
@@ -156,27 +188,27 @@ main {
     .menu-container {
         flex-direction: column;
         gap: 0.5rem;
-        padding: 1rem;
+        padding: 0.5rem 1rem;
     }
 
     .menu-item {
         font-size: 1rem;
-        padding: 0.75rem 1rem;
+        padding: 0.5rem 1rem;
         width: 100%;
         text-align: center;
-        color: white;
+        color: #333;
     }
 }
 
 @media (max-width: 768px) and (min-width: 641px) {
     .menu-container {
         gap: 1rem;
-        padding: 1rem;
+        padding: 0.5rem 1rem;
     }
 
     .menu-item {
         font-size: 1rem;
-        padding: 0.5rem 0.75rem;
+        padding: 0.25rem 0.75rem;
     }
 }
 
@@ -189,7 +221,8 @@ main {
 
 #blazor-error-ui {
     color-scheme: light only;
-    background: lightyellow;
+    background: #FFD700;
+    color: #333;
     bottom: 0;
     box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
     box-sizing: border-box;

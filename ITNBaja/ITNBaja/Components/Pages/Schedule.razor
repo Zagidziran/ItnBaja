@@ -4,7 +4,7 @@
 @using System.Net.Http.Json
 @using ITNBaja.Services
 @using Microsoft.JSInterop
-@inject HttpClient Http
+@inject IHttpClientFactory HttpClientFactory
 @inject NavigationManager Navigation
 @inject AuthStateService AuthState
 @inject IJSRuntime JSRuntime
@@ -14,7 +14,7 @@
 
 <PageTitle>Расписание тренировок</PageTitle>
 
-<div class="schedule-content @(isEditing ? "editing" : "")"
+<div class="schedule-content @(isEditing ? "editing" : "")">
     <div class="schedule-header">
         <h1 class="schedule-title">Расписание тренировок</h1>
         @if (isAuthenticated && !isEditing)
@@ -55,7 +55,7 @@
             </div>
             
             <div class="preview-panel">
-                <h3>Превью:</h3>
+                <h3>Предварительный просмотр:</h3>
                 @if (!string.IsNullOrEmpty(previewError))
                 {
                     <div class="preview-error-container">
@@ -178,11 +178,13 @@
     {
         try
         {
+            using var httpClient = HttpClientFactory.CreateClient();
+            
             // Construct full URL using NavigationManager
             var baseUri = Navigation.BaseUri;
             var fullUrl = new Uri(new Uri(baseUri), "schedule.yaml").ToString();
             
-            var yamlContentFromFile = await Http.GetStringAsync(fullUrl);
+            var yamlContentFromFile = await httpClient.GetStringAsync(fullUrl);
             var deserializer = new DeserializerBuilder()
 	            .WithCaseInsensitivePropertyMatching()
 	            .Build();

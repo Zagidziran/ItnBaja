@@ -2,27 +2,31 @@
 @using ITNBaja.Components.Shared
 
 <div class="page">
-    <nav class="top-menu">
-        <div class="menu-container">
-            <a href="/about" class="menu-item">О школе</a>
-            <a href="/team" class="menu-item">Команда</a>
-            <a href="/area" class="menu-item">Площадка</a>
-            <a href="/schedule" class="menu-item">Расписание тренировок</a>
-            <a href="/equipment" class="menu-item">Техника</a>
-            <a href="/contacts" class="menu-item">Контакты</a>
+    <div class="header-section">
+        <img src="flags2.png" alt="Racing Flags" class="flags-image" />
+        
+        <div class="header-banner">
+            <div class="banner-left">
+                <img src="Biker.png" alt="Biker" class="banner-image" />
+                <h1 class="banner-text">Институт Тюнинга и Настройки Baja</h1>
+            </div>
+            <div class="banner-right">
+                <AuthButton />
+            </div>
         </div>
-    </nav>
 
-    <div class="header-banner">
-        <div class="banner-left">
-            <img src="Biker.png" alt="Biker" class="banner-image" />
-            <h1 class="banner-text">Институт Тюнинга и Настройки Baja</h1>
-        </div>
-        <div class="banner-right">
-            <AuthButton />
-        </div>
+        <nav class="top-menu">
+            <div class="menu-container">
+                <a href="/about" class="menu-item">О школе</a>
+                <a href="/team" class="menu-item">Команда</a>
+                <a href="/area" class="menu-item">Площадка</a>
+                <a href="/schedule" class="menu-item">Расписание тренировок</a>
+                <a href="/equipment" class="menu-item">Техника</a>
+                <a href="/gallery" class="menu-item">Галерея</a>
+                <a href="/contacts" class="menu-item">Контакты</a>
+            </div>
+        </nav>
     </div>
-
     <main>
         <article class="content px-4">
             @Body

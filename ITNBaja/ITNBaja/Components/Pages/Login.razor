@@ -5,7 +5,7 @@
 @using ITNBaja.Controllers.Responses
 @using ITNBaja.Services
 @using Microsoft.JSInterop
-@inject HttpClient Http
+@inject IHttpClientFactory HttpClientFactory
 @inject NavigationManager Navigation
 @inject AuthStateService AuthState
 @inject IJSRuntime JSRuntime
@@ -88,11 +88,13 @@
                 Password = password
             };
 
+            using var httpClient = HttpClientFactory.CreateClient();
+            
             // Construct full URL using NavigationManager
             var baseUri = Navigation.BaseUri;
             var fullUrl = new Uri(new Uri(baseUri), "api/auth/login").ToString();
 
-            var response = await Http.PostAsJsonAsync(fullUrl, loginRequest);
+            var response = await httpClient.PostAsJsonAsync(fullUrl, loginRequest);
             Console.WriteLine($"Response status: {response.StatusCode}");
 
 
