@@ -9,4 +9,5 @@ build: {}
 run:
   image: null
   persistenceMount: /data
-  containerPort: 80
+  containerPort: 8080
+  servicePort: 80
