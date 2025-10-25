@@ -7,7 +7,6 @@ COPY ITNBaja.sln ./
 
 # Copy project files
 COPY ITNBaja/ITNBaja/ITNBaja.csproj ITNBaja/ITNBaja/
-COPY ITNBaja/ITNBaja.Client/ITNBaja.Client.csproj ITNBaja/ITNBaja.Client/
 
 # Restore dependencies
 RUN dotnet restore
