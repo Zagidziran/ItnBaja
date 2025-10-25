@@ -1,0 +1,38 @@
+@rendermode InteractiveServer
+
+<button class="mobile-menu-toggle @(isMobileMenuOpen ? "menu-open" : "")" @onclick="ToggleMobileMenu" aria-label="Toggle menu">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+</button>
+
+@if (isMobileMenuOpen)
+{
+    <div class="mobile-menu-backdrop" @onclick="CloseMobileMenu"></div>
+}
+
+<div class="menu-container @(isMobileMenuOpen ? "mobile-open" : "")">
+    <a href="/about" class="menu-item" @onclick="CloseMobileMenu">О школе</a>
+    <a href="/team" class="menu-item" @onclick="CloseMobileMenu">Команда</a>
+    <a href="/area" class="menu-item" @onclick="CloseMobileMenu">Площадка</a>
+    <a href="/schedule" class="menu-item" @onclick="CloseMobileMenu">Расписание тренировок</a>
+    <a href="/equipment" class="menu-item" @onclick="CloseMobileMenu">Техника</a>
+    <a href="/gallery" class="menu-item" @onclick="CloseMobileMenu">Галерея</a>
+    <a href="/contacts" class="menu-item" @onclick="CloseMobileMenu">Контакты</a>
+</div>
+
+@code {
+    private bool isMobileMenuOpen = false;
+
+    private void ToggleMobileMenu()
+    {
+        isMobileMenuOpen = !isMobileMenuOpen;
+        Console.WriteLine($"Mobile menu toggled: {isMobileMenuOpen}");
+    }
+
+    private void CloseMobileMenu()
+    {
+        isMobileMenuOpen = false;
+        Console.WriteLine("Mobile menu closed");
+    }
+}
