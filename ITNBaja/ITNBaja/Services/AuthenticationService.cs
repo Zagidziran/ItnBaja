@@ -1,13 +1,21 @@
+using ITNBaja.Models;
+using Microsoft.Extensions.Options;
+
 namespace ITNBaja.Services
 {
     public class AuthenticationService
     {
-        private const string ADMIN_USERNAME = "admin";
-        private const string ADMIN_PASSWORD = "aBajaYou<3";
+        private readonly AdminCredentialsOptions _adminCredentials;
+        
+        public AuthenticationService(IOptions<AdminCredentialsOptions> adminCredentials)
+        {
+            _adminCredentials = adminCredentials.Value;
+        }
         
         public bool ValidateCredentials(string username, string password)
         {
-            return username == ADMIN_USERNAME && password == ADMIN_PASSWORD;
+            return _adminCredentials.Any(user => 
+                user.Username == username && user.Password == password);
         }
     }
 }

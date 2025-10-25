@@ -1,5 +1,5 @@
-using ITNBaja.Client.Pages;
 using ITNBaja.Components;
+using ITNBaja.Models;
 using ITNBaja.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +23,9 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+// Configure admin credentials from appsettings and environment variables
+builder.Services.Configure<AdminCredentialsOptions>(builder.Configuration.GetSection("Credentials"));
 
 // Add authentication service
 builder.Services.AddScoped<AuthenticationService>();
@@ -54,7 +57,6 @@ app.MapStaticAssets();
 app.MapControllers();
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddInteractiveServerRenderMode()
-    .AddAdditionalAssemblies(typeof(ITNBaja.Client._Imports).Assembly);
+    .AddInteractiveServerRenderMode();
 
 app.Run();
