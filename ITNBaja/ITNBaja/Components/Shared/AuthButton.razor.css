@@ -10,6 +10,32 @@
     background: rgba(255, 255, 255, 0.9);
 }
 
+/* Mobile menu styling */
+.auth-button-mobile .contacts-link {
+    color: #333;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 1rem;
+    width: 100%;
+    text-align: center;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 0;
+    transition: all 0.2s ease;
+    display: block;
+    background: white;
+}
+
+.auth-button-mobile .contacts-link:hover {
+    background: #f8f9fa;
+    color: #000;
+    text-decoration: none;
+    transform: translateX(5px);
+    border-radius: 0;
+    box-shadow: none;
+}
+
 .contacts-link:hover {
     background: rgba(255, 255, 255, 1);
     border-color: #000;

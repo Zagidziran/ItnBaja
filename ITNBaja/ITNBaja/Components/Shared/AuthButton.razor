@@ -8,7 +8,7 @@
 
 @if (isLoading)
 {
-    <a href="/login" class="contacts-link">Войти</a>
+    <a href="/login" class="contacts-link" @onclick="OnClick">Войти</a>
 }
 else if (AuthState.IsAuthenticated)
 {
@@ -16,7 +16,7 @@ else if (AuthState.IsAuthenticated)
 }
 else
 {
-    <a href="/login" class="contacts-link">Войти</a>
+    <a href="/login" class="contacts-link" @onclick="OnClick">Войти</a>
 }
 
 @if (!string.IsNullOrEmpty(logoutMessage))
@@ -27,6 +27,7 @@ else
 }
 
 @code {
+    [Parameter] public EventCallback OnClick { get; set; }
     private string logoutMessage = "";
     private bool isLoading = true;
     

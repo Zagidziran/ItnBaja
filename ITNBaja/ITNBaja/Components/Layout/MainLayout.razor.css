@@ -56,6 +56,18 @@
     z-index: 15;
 }
 
+.auth-button-desktop {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    z-index: 20;
+}
+
+.auth-button-desktop .contacts-link {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+}
+
 .banner-text {
     font-size: 1.8rem;
     font-weight: bold;
@@ -215,6 +227,10 @@ main {
         height: 80px;
         align-self: center;
         margin: 10px 0;
+    }
+
+    .auth-button-desktop {
+        display: none;
     }
 
     .banner-left {

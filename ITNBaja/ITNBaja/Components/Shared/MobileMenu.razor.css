@@ -110,6 +110,19 @@
     to { opacity: 1; }
 }
 
+.auth-button-mobile {
+    display: none;
+}
+
+@media (max-width: 640.98px) {
+    .auth-button-mobile {
+        display: block;
+        padding: 0;
+        text-align: center;
+        background: white;
+    }
+}
+
 @media (max-width: 640.98px) {
     .mobile-menu-toggle {
         display: flex;

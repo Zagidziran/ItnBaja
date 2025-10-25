@@ -1,4 +1,5 @@
 @rendermode InteractiveServer
+@using ITNBaja.Components.Shared
 
 <button class="mobile-menu-toggle @(isMobileMenuOpen ? "menu-open" : "")" @onclick="ToggleMobileMenu" aria-label="Toggle menu">
     <span class="hamburger-line"></span>
@@ -14,11 +15,13 @@
 <div class="menu-container @(isMobileMenuOpen ? "mobile-open" : "")">
     <a href="/about" class="menu-item" @onclick="CloseMobileMenu">О школе</a>
     <a href="/team" class="menu-item" @onclick="CloseMobileMenu">Команда</a>
-    <a href="/area" class="menu-item" @onclick="CloseMobileMenu">Площадка</a>
     <a href="/schedule" class="menu-item" @onclick="CloseMobileMenu">Расписание тренировок</a>
     <a href="/equipment" class="menu-item" @onclick="CloseMobileMenu">Техника</a>
     <a href="/gallery" class="menu-item" @onclick="CloseMobileMenu">Галерея</a>
     <a href="/contacts" class="menu-item" @onclick="CloseMobileMenu">Контакты</a>
+    <div class="auth-button-mobile">
+        <AuthButton OnClick="CloseMobileMenu" />
+    </div>
 </div>
 
 @code {
